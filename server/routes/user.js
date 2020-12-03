@@ -4,9 +4,9 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 const User = require('../models/user');
 
+const { verificarToken } = require('../middlewares/authentication');
 
-
-app.get('/api/user', function (req, res) {
+app.get('/api/user', verificarToken , (req, res) => {
 
     let desde = req.query.desde || 0;
     desde = Number(desde);
@@ -39,7 +39,7 @@ app.get('/api/user', function (req, res) {
 
 });
 
-app.post('/api/user', function (req, res) {
+app.post('/api/user', verificarToken , function (req, res) {
     let body = req.body;
     let user = new User({
         name: body.name,
@@ -64,7 +64,7 @@ app.post('/api/user', function (req, res) {
     });
 });
 
-app.put('/api/user/:id', function (req, res) {
+app.put('/api/user/:id', verificarToken , function (req, res) {
     let id = req.params.id;
     let body = _.pick(req.body, ['name', 'role', 'status', 'google']);
 
@@ -85,7 +85,7 @@ app.put('/api/user/:id', function (req, res) {
     })
 });
 
-app.patch('/api/user/:id', function (req, res) {
+app.patch('/api/user/:id', verificarToken, function (req, res) {
     let id = req.params.id;
     let cambioEstado = {
         status: false
@@ -116,7 +116,7 @@ app.patch('/api/user/:id', function (req, res) {
     })
 })
 
-app.delete('/api/user/:id', function (req, res) {
+app.delete('/api/user/:id', verificarToken, function(req, res) {
     let id = req.params.id;
 
     User.findByIdAndRemove(id, (err, deletedUserDB) => {

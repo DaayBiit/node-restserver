@@ -8,11 +8,11 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended:false }));
 app.use(bodyParser.json());
 
+//configuracion global de routes
+app.use(require('./routes/index'));
 
-app.use(require('./routes/user'));
-
-app.get('/api', function (req, res) {
-    res.send('Hello API REST')
+app.get('/', function (req, res) {
+    res.send('Hello APP REST SERVER')
   });
 
 
