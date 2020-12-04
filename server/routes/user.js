@@ -6,6 +6,37 @@ const User = require('../models/user');
 
 const { verificarToken } = require('../middlewares/authentication');
 
+
+app.get('/api/user/:id', verificarToken , (req, res) => {
+
+   
+    User.findById(req.params.id)
+        .exec((err, userDB) => {
+            if (err) {
+               // console.log("Error:::", err);
+                return res.status(400).json({
+                    ok: false,
+                    err
+                })
+            }
+            if (!userDB || userDB === null) {
+                return res.status(400).json({
+                    ok: false,
+                    error: {
+                        message: 'Usuario no encontrado'
+                    }
+                });
+            }
+            res.json({
+                ok: true,
+                user: userDB
+            })
+            
+        })
+
+
+});
+
 app.get('/api/user', verificarToken , (req, res) => {
 
     let desde = req.query.desde || 0;
@@ -50,8 +81,8 @@ app.post('/api/user', verificarToken , function (req, res) {
 
     user.save((err, userDB) => {
         if (err) {
-            console.log("Error:::", err);
-            return res.status(400).json({
+            console.log("user.save - Error:::", err);
+            return res.status(500).json({
                 ok: false,
                 err
             })

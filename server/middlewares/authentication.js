@@ -9,10 +9,10 @@ let verificarToken = (req, res, next) => {
 
     jwt.verify( token, process.env.SEED, (err, decoded) => {
         if (err) {
-            console.log("Error:::", err);
+            console.log("jwt.verify Error:::", err);
             return res.status(400).json({
                 ok: false,
-                message: 'Token Invalido'
+                message: `Token Invalido::: ${token}`
             })
         }
 
@@ -21,10 +21,24 @@ let verificarToken = (req, res, next) => {
     })
 }
 
-let verificarRole = (req, res, next) => {
+// =====================
+// Verifica AdminRole
+// =====================
+let verificaAdminRole = (req, res, next) => {
 
+    let user = req.user;
 
-    
-}
+    if (user.role === 'ADMIN_ROLE') {
+        next();
+    } else {
 
-module.exports = { verificarToken };
+        return res.json({
+            ok: false,
+            err: {
+                message: 'El usuario no es administrador'
+            }
+        });
+    }
+};
+
+module.exports = { verificarToken, verificaAdminRole };
