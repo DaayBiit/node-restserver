@@ -113,6 +113,7 @@ app.post('/api/product', verificarToken, (req, res) => {
         costUni: body.costUni,
         description: body.description,
         available: body.available,
+        img: body.img,
         category: body.category,
         user: req.user._id
         });

@@ -1,11 +1,31 @@
+const  jwt  = require("jsonwebtoken");
 //============================
 // Verificar Token
 //============================
 
-const  jwt  = require("jsonwebtoken");
-
 let verificarToken = (req, res, next) => {
     let token = req.get('token');
+
+    jwt.verify( token, process.env.SEED, (err, decoded) => {
+        if (err) {
+            console.log("jwt.verify Error:::", err);
+            return res.status(400).json({
+                ok: false,
+                message: `Token Invalido::: ${token}`
+            })
+        }
+
+       req.user = decoded.user;
+       next();
+    })
+}
+
+//============================
+// Verificar Token para Imagen
+//============================
+
+let verificarTokenImage = (req, res, next) => {
+    let token = req.query.token;
 
     jwt.verify( token, process.env.SEED, (err, decoded) => {
         if (err) {
@@ -41,4 +61,4 @@ let verificaAdminRole = (req, res, next) => {
     }
 };
 
-module.exports = { verificarToken, verificaAdminRole };
+module.exports = { verificarToken, verificaAdminRole, verificarTokenImage };
